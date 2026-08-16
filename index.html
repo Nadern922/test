@@ -5753,10 +5753,9 @@ function dailyRender(){
   const today=dailyDateKey();
   dailyDateLabelEl.textContent=dailyFormatDate(today);
   const appointments=dailyLoad().filter(x=>x.date===today);
-  const items=[
-    ...dailyPrayerItems(),
-    ...appointments.map(x=>({...x,icon:dailyIcon(x.type)}))
-  ].sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const items=appointments
+    .map(x=>({...x,icon:dailyIcon(x.type)}))
+    .sort((a,b)=>(a.time||'').localeCompare(b.time||''));
   dailyCountLabelEl.textContent=items.length ? `${items.length} موعد` : 'لا توجد مواعيد';
   if(!items.length){
     dailyTimelineEl.innerHTML='<div class="daily-empty">يومك فارغ حاليًا ✨<br>أضف رحلة أو موعدًا أو تذكيرًا من زر +</div>';
