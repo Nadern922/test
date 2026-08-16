@@ -5161,11 +5161,17 @@ initLocation();
 
 /* ============ نوافذ الأدوات: فتح/إغلاق عام ============ */
 function openSimpleOverlay(id){
+  const replacingOpenSection = !!document.querySelector('.section-overlay.open, .mushaf-overlay.open');
   closeAllOverlays();
   const ov = document.getElementById(id);
   if(!ov) return;
   ov.classList.add('open');
   document.body.style.overflow = 'hidden';
+  // الأدوات الفرعية (مثل أسماء الله الحسنى) تُفتح من داخل قسم آخر.
+  // نسجّل لها خطوة مستقلة حتى يغلقها زر الرجوع ولا يخرج من التطبيق.
+  if(replacingOpenSection){
+    history.pushState({salatiSection:true, salatiNested:id}, '');
+  }
 }
 function closeSimpleOverlay(id){
   const ov = document.getElementById(id);
