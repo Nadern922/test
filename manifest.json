@@ -1,0 +1,12 @@
+{
+  "name": "Salati Test",
+  "short_name": "Salati Test",
+  "description": "نسخة Salati التجريبية المستقلة",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071b18",
+  "theme_color": "#0b2a25"
+}

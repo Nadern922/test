@@ -1947,7 +1947,7 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.8-3.8a5 5 0 01-6.8 6.8l-8.5 8.5a2 2 0 01-2.8-2.8l8.5-8.5a5 5 0 016.8-6.8z"/>
     </svg>
-    <span>أدوات إسلامية</span>
+    <span>الأدوات</span>
   </button>
   <button class="nav-item" id="navHome" aria-label="يومي">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -2378,8 +2378,10 @@
             <option value="appointment">📅 موعد</option>
             <option value="flight">✈️ رحلة</option>
             <option value="work">💼 عمل</option>
+            <option value="meeting">👥 اجتماع</option>
             <option value="trip">🚗 مشوار</option>
             <option value="reminder">🔔 تذكير</option>
+            <option value="occasion">🎉 مناسبة</option>
             <option value="custom">✏️ مخصص</option>
           </select>
         </div>
@@ -3496,7 +3498,10 @@ function closeSettingsOverlay(){
 /* شبكة الوصول السريع بالصفحة الرئيسية */
 document.getElementById('quranClose').addEventListener('click', closeQuranOverlay);
 
-navCalendarBtn.addEventListener('click', openCalendarOverlay);
+navCalendarBtn.addEventListener('click', () => {
+  openKhatmaQuick();
+  setActiveNav(navCalendarBtn);
+});
 navHomeBtn.addEventListener('click', openDailyOverlay);
 document.getElementById('searchClose').addEventListener('click', closeSearchOverlay);
 navSettingsBtn.addEventListener('click', openSettingsOverlay);
@@ -5565,6 +5570,7 @@ if(khatmaCardEl) khatmaCardEl.addEventListener('click', openKhatmaQuick);
 function openKhatmaQuick(){
   openQuranOverlay();
   quranOverlay.classList.add('khatma-mode');
+  setActiveNav(navCalendarBtn);
   setTimeout(() => {
     const btn = document.getElementById('khatmaBtn');
     if(btn && !btn.classList.contains('open')) btn.click();
@@ -5694,7 +5700,7 @@ function dailyLoad(){
 }
 function dailySave(items){ try{localStorage.setItem(DAILY_KEY,JSON.stringify(items));}catch(e){} }
 function dailyIcon(type){
-  return ({flight:'✈️',work:'💼',trip:'🚗',reminder:'🔔',appointment:'📅',custom:'✏️'})[type]||'📅';
+  return ({flight:'✈️',work:'💼',meeting:'👥',trip:'🚗',reminder:'🔔',occasion:'🎉',appointment:'📅',custom:'✏️'})[type]||'📅';
 }
 function dailyTypeClass(type){
   return ['flight','work'].includes(type)?type:'';
@@ -5734,10 +5740,9 @@ function dailyCloseModal(){dailyModalBackdrop.classList.remove('open');}
 function dailyPrayerItems(){
   const out=[];
   const t=window.timingsData && window.timingsData.timings;
-  if(!t) return out;
-  const map=[['Fajr','الفجر','04:04'],['Dhuhr','الظهر','11:57'],['Asr','العصر','03:26'],['Maghrib','المغرب','06:27'],['Isha','العشاء','07:57']];
+  const map=[['Fajr','الفجر','04:04'],['Dhuhr','الظهر','11:57'],['Asr','العصر','15:26'],['Maghrib','المغرب','18:27'],['Isha','العشاء','19:57']];
   map.forEach(([key,name,fallback])=>{
-    let v=t[key]||fallback;
+    let v=(t && t[key])||fallback;
     if(v && typeof v==='string') v=v.split(' ')[0];
     out.push({id:'prayer-'+key,title:'صلاة '+name,type:'prayer',time:v,meta:'موعد الصلاة',done:false,prayer:true});
   });
@@ -6699,6 +6704,7 @@ document.getElementById('calendarClose').addEventListener('click', () => {
 /* ============ إصلاح زر "يومي" بشكل مستقل ============
    هذا الربط الاحتياطي يعمل حتى لو توقف جزء آخر من سكربت التطبيق. */
 (function(){
+  return; // تم تعطيل الطبقة المكررة: التنفيذ الرئيسي أعلاه هو المصدر الوحيد للحالة والأحداث.
   function openDailySafely(){
     const daily=document.getElementById('dailyOverlay');
     if(!daily) return;
@@ -6729,6 +6735,7 @@ document.getElementById('calendarClose').addEventListener('click', () => {
 /* ============ يومي: طبقة تشغيل مستقلة ============
    لا تعتمد على بقية JavaScript؛ تعمل حتى لو تعطل جزء آخر من التطبيق. */
 (function(){
+  return; // تم تعطيل التخزين v2 والمعالجات المكررة لمنع تعارض الحفظ والأزرار.
   const $=id=>document.getElementById(id);
   const nav=$('navHome'), overlay=$('dailyOverlay'), modal=$('dailyModalBackdrop');
   if(!nav||!overlay) return;
