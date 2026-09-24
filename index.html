@@ -1661,7 +1661,7 @@
   .picker-modal-body{flex:1; overflow-y:auto; padding:14px 16px calc(16px + env(safe-area-inset-bottom));}
   .picker-modal-body .reciter-panel{max-height:none !important; overflow:visible !important; margin-bottom:0 !important;}
 </style>
-<link rel="stylesheet" href="styles-v2.css">
+<link rel="stylesheet" href="styles-v2.css?v=3">
 
 </head>
 <body>
@@ -1760,7 +1760,7 @@
     </div>
     <span class="hero-qibla-label">
       <span class="hero-qibla-title" data-i18n="grid.qibla">القبلة</span>
-      <span class="hero-qibla-sub" id="qiblaInfoMini" data-i18n="grid.qiblaSub">244° · 790 كم (اضغط لعرض الخريطة)</span>
+      <span class="hero-qibla-sub" id="qiblaInfoMini" data-i18n="grid.qiblaSub">244° · 790 كم · الاتجاه من الشمال</span>
     </span>
   </button>
 
@@ -1827,7 +1827,7 @@
         </svg>
       </span>
       <span class="gc-text"><span class="gc-title">القبلة</span></span>
-      <span id="quickQiblaSub" style="display:none;">244° · 790 كم (اضغط لعرض الخريطة)</span>
+      <span id="quickQiblaSub" style="display:none;">244° · 790 كم · الاتجاه من الشمال</span>
     </button>
   </div>
 
@@ -2773,13 +2773,14 @@
 <!-- QIBLA MAP OVERLAY -->
 <div class="section-overlay qibla-ar-overlay" id="qiblaArOverlay">
   <div class="mushaf-top qibla-ar-top">
-    <button class="mushaf-close" id="qiblaArClose">‹</button>
+    <button class="mushaf-close" id="qiblaArClose" aria-label="إغلاق اتجاه القبلة">‹</button>
     <div class="mushaf-page-info" style="color:#fff;">اتجاه القبلة</div>
     <div style="width:36px;"></div>
   </div>
 
+  <div class="qibla-intro"><span>وَجْهَةٌ وَاحِدَة</span><h1>وجهتك إلى القبلة</h1><p>ضع جهازك بشكل مسطح، ووجّه أعلاه نحو السهم.</p></div>
   <div class="qibla-dial-wrap" id="qiblaDialWrap">
-    <div class="qibla-dial-deg" id="qiblaDialDeg">244°</div>
+    <div class="qibla-dial-deg" id="qiblaDialDeg">—</div>
     <div class="qibla-dial-caption">اتجاه القبلة من الشمال الحقيقي</div>
     <div class="qibla-dial">
       <svg class="qibla-dial-ring" viewBox="0 0 200 200" fill="none">
@@ -2808,16 +2809,16 @@
         <text class="qd-kaaba-icon" x="100" y="101">🕋</text>
       </svg>
     </div>
-    <div class="qibla-dial-status" id="qiblaDialStatus">🧭 اضغط لتفعيل البوصلة الحية</div>
+    <div class="qibla-dial-status" id="qiblaDialStatus" role="status" aria-live="polite">🧭 اضغط لتفعيل البوصلة الحية</div>
     <div class="qibla-dial-heading" id="qiblaDialHeading"></div>
-    <div class="qibla-dial-dist" id="qiblaDialDist">أنت على بعد 790 كم من الكعبة</div>
+    <div class="qibla-dial-dist" id="qiblaDialDist">بانتظار تحديد الموقع</div>
     <div class="qibla-dial-caption" style="margin-top:8px; margin-bottom:0;">لو كانت القراءة غير مستقرة حرّك جهازك على شكل ∞ لمعايرة البوصلة</div>
   </div>
 
   <div class="qibla-ar-aligned" id="qiblaArAligned">🕋 أنت متجه إلى القبلة الآن</div>
 
-  <div class="qibla-ar-info" id="qiblaInfoAR">244° · 790 كم (اضغط لعرض الخريطة)</div>
-  <div class="qibla-ar-error" id="qiblaArError" style="display:none;"></div>
+  <div class="qibla-ar-info" id="qiblaInfoAR">حدّد موقعك لحساب اتجاه القبلة</div>
+  <div class="qibla-ar-error" role="alert" id="qiblaArError" style="display:none;"></div>
 </div>
 
 
@@ -3082,14 +3083,17 @@
 <div class="section-overlay" id="islamicToolsOverlay">
   <div class="mushaf-top">
     <button class="mushaf-close" id="islamicToolsClose">‹</button>
-    <div class="mushaf-page-info">أدوات إسلامية</div>
+    <div class="mushaf-page-info">الأدوات الإسلامية</div>
     <div style="width:36px;"></div>
   </div>
   <div class="mushaf-content">
-    <div class="settings-group">
+    <div class="tools-intro"><span>صَلاتِي · رَفِيقُ يَوْمِكَ</span><h1>رفيق عبادتك</h1><p>أدوات بسيطة، تعينك على تفاصيل يومك.</p></div>
+    <div class="settings-group tools-directory">
+      <div class="settings-group-title">اكتشف أدواتك</div>
+      <button class="more-row" id="toolsQiblaBtn" type="button"><span class="mr-icon" aria-hidden="true">⌖</span><span class="mr-label">اتجاه القبلة<small>وجهتك أينما كنت</small></span></button>
       <button class="more-row" id="toolsCalendarBtn">
         <span class="mr-icon">🗓️</span>
-        <span class="mr-label">التقويم</span>
+        <span class="mr-label">التقويم<small>مواعيدك بالتاريخ الهجري</small></span>
       </button>
       <button class="more-row" id="toolsStatsBtn" style="display:none;">
         <span class="mr-icon">📊</span>
@@ -3097,15 +3101,15 @@
       </button>
       <button class="more-row" id="toolsZakatBtn">
         <span class="mr-icon">💰</span>
-        <span class="mr-label">حاسبة الزكاة</span>
+        <span class="mr-label">حاسبة الزكاة<small>احسب زكاة مالك بسهولة</small></span>
       </button>
       <button class="more-row" id="toolsConverterBtn">
         <span class="mr-icon">🔄</span>
-        <span class="mr-label">محوّل التاريخ هجري ⇄ ميلادي</span>
+        <span class="mr-label">محوّل التاريخ هجري ⇄ ميلادي<small>انتقل بين التقويمين</small></span>
       </button>
       <button class="more-row" id="toolsAzanVoicesBtn">
         <span class="mr-icon">🔊</span>
-        <span class="mr-label">أصوات الأذان</span>
+        <span class="mr-label">أصوات الأذان<small>استمع واختر صوت التنبيه</small></span>
       </button>
     </div>
 
@@ -5588,7 +5592,7 @@ function updateQibla(lat, lon){
   if(!compassActive) qiblaArrowEls.forEach(el => el.style.transform = `rotate(${bearing}deg)`);
   const infoTxt = compassActive
     ? `${Math.round(bearing)}° · ${Math.round(distanceKm).toLocaleString('en-US')} كم`
-    : `${Math.round(bearing)}° · ${Math.round(distanceKm).toLocaleString('en-US')} كم (اضغط لعرض الخريطة)`;
+    : `${Math.round(bearing)}° · ${Math.round(distanceKm).toLocaleString('en-US')} كم · الاتجاه من الشمال`;
   qiblaInfoEls.forEach(el => el.textContent = infoTxt);
 
   if(qiblaDialDegEl) qiblaDialDegEl.textContent = `${Math.round(bearing)}°`;
@@ -5615,7 +5619,7 @@ function updateQiblaAlignment(rel){
   if(mapArrowWrapEl) mapArrowWrapEl.classList.toggle('aligned', nowAligned);
   if(qiblaArAlignedEl) qiblaArAlignedEl.classList.toggle('show', nowAligned);
   if(qiblaDialWrapEl) qiblaDialWrapEl.classList.toggle('aligned', nowAligned);
-  if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = nowAligned ? '✓ أنت تواجه القبلة الآن' : '🧭 لُف جهازك حتى يتّجه السهم للأعلى';
+  if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = nowAligned ? '✓ أنت باتجاه القبلة' : `استدر ${rel > 180 ? 'يسارًا' : 'يمينًا'} ${Math.round(diff)}° نحو القبلة`;
 }
 
 function applyCompassRotation(){
@@ -5635,11 +5639,14 @@ function handleOrientation(e){
   }else if(e.absolute && typeof e.alpha === 'number'){
     heading = 360 - e.alpha;
   }else if(typeof e.alpha === 'number'){
-    heading = 360 - e.alpha;
+    // Relative orientation does not establish north; do not claim alignment.
+    if(!compassActive && qiblaDialStatusEl) qiblaDialStatusEl.textContent = "لا تتوفر قراءة للشمال؛ جرّب معايرة البوصلة";
+    return;
   }else{
     return;
   }
-  compassHeading = heading;
+  if(!Number.isFinite(heading)) return;
+  compassHeading = (heading + 360) % 360;
   compassActive = true;
   applyCompassRotation();
   if(qiblaBearing !== null && !qiblaIsAligned){
@@ -5667,9 +5674,9 @@ function startCompass(){
     window.addEventListener('deviceorientationabsolute', handleOrientation, true);
     window.addEventListener('deviceorientation', handleOrientation, true);
   }else{
-    qiblaArError.textContent = 'البوصلة الحية غير مدعومة على هذا الجهاز/المتصفح، يمكنك الاعتماد على الخريطة فقط.';
+    qiblaArError.textContent = 'البوصلة الحية غير مدعومة على هذا الجهاز. جرّب هاتفًا يدعم حساس الاتجاه.';
     qiblaArError.style.display = 'block';
-    if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = '⚠️ البوصلة غير مدعومة، استخدم الخريطة';
+    if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = 'البوصلة غير متاحة على هذا الجهاز';
   }
 }
 
@@ -5683,7 +5690,7 @@ function openQiblaAR(){
   if(mapArrowWrapEl0) mapArrowWrapEl0.classList.remove('aligned');
   if(qiblaArAlignedEl) qiblaArAlignedEl.classList.remove('show');
   if(qiblaDialWrapEl) qiblaDialWrapEl.classList.remove('aligned');
-  if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = '🧭 اضغط لتفعيل البوصلة الحية';
+  if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = 'بانتظار قراءة البوصلة…';
   if(qiblaDialHeadingEl) qiblaDialHeadingEl.textContent = '';
 
   startCompass();
@@ -6387,6 +6394,7 @@ function openIslamicToolsOverlay(){
   setActiveNav(navAzkarBtn);
 }
 document.getElementById('islamicToolsClose').addEventListener('click', () => closeSimpleOverlay('islamicToolsOverlay'));
+document.getElementById('toolsQiblaBtn').addEventListener('click', openQiblaAR);
 document.getElementById('toolsCalendarBtn').addEventListener('click', openCalendarOverlay);
 document.getElementById('toolsStatsBtn').addEventListener('click', openStatsOverlay);
 document.getElementById('toolsZakatBtn').addEventListener('click', () => openSimpleOverlay('zakatOverlay'));

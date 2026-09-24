@@ -10,6 +10,51 @@
   --v2-shadow: 0 18px 50px rgba(0, 0, 0, .24);
 }
 
+/* Qibla and menus: shared emerald / warm-gold surfaces. */
+body { --menu-bg:#0c1917; --menu-panel:#152522; --menu-line:#2a3e36; --menu-text:#ecf3ec; --menu-muted:#a5b6ac; --menu-gold:#dbc08a; --menu-ok:#9dd4b6; }
+body.light-mode { --menu-bg:#f7f7f0; --menu-panel:#fff; --menu-line:#dbe3d9; --menu-text:#173b33; --menu-muted:#60736b; --menu-gold:#89662f; --menu-ok:#246b54; }
+#qiblaArOverlay, #islamicToolsOverlay, #settingsOverlay { background:var(--menu-bg); color:var(--menu-text); }
+#qiblaArOverlay { overflow-y:auto; padding-bottom:max(26px,env(safe-area-inset-bottom)); }
+#qiblaArOverlay .mushaf-top, #islamicToolsOverlay .mushaf-top, #settingsOverlay .mushaf-top { background:var(--menu-bg); border-bottom:1px solid var(--menu-line); flex-shrink:0; padding-top:max(16px,env(safe-area-inset-top)); }
+#qiblaArOverlay .mushaf-page-info, #islamicToolsOverlay .mushaf-page-info, #settingsOverlay .mushaf-page-info { color:var(--menu-text)!important; }
+#qiblaArOverlay .mushaf-close, #islamicToolsOverlay .mushaf-close, #settingsOverlay .mushaf-close { background:var(--menu-panel); color:var(--menu-text); border:1px solid var(--menu-line); width:44px; height:44px; border-radius:50%; }
+.qibla-intro, .tools-intro { width:min(100%,480px); margin:0 auto; padding:26px 24px 12px; }
+.qibla-intro span, .tools-intro>span { color:var(--menu-gold); font-size:.7rem; letter-spacing:.12em; }
+.qibla-intro h1, .tools-intro h1 { font-size:1.7rem; line-height:1.4; margin:10px 0 8px; color:var(--menu-text); }
+.qibla-intro p, .tools-intro p { margin:0; font-size:.86rem; line-height:1.9; color:var(--menu-muted); }
+#qiblaArOverlay .qibla-dial-wrap { position:relative; top:auto; left:auto; transform:none; width:min(100%,480px); max-width:none; margin:0 auto; padding:18px 24px; border:0; box-shadow:none; background:transparent; flex-shrink:0; }
+#qiblaArOverlay .qibla-dial-deg { color:var(--menu-gold); font-size:1.6rem; font-weight:500; }
+#qiblaArOverlay .qibla-dial-caption { text-align:center; line-height:1.8; color:var(--menu-muted); }
+#qiblaArOverlay .qibla-dial { width:min(100%,300px); height:auto; aspect-ratio:1; margin:22px 0; border-radius:50%; background:radial-gradient(circle,var(--menu-panel) 0 50%,transparent 51%); }
+#qiblaArOverlay .qibla-dial:before { content:''; position:absolute; inset:18%; border:1px dashed var(--menu-line); border-radius:50%; }
+#qiblaArOverlay .qd-outer, #qiblaArOverlay .qd-tick { stroke:var(--menu-line); }
+#qiblaArOverlay .qd-tick.major { stroke:var(--menu-gold); stroke-width:2; }
+#qiblaArOverlay .qd-label { fill:var(--menu-muted); font-size:11px; font-weight:400; }
+#qiblaArOverlay .qd-head { fill:var(--menu-gold); }
+#qiblaArOverlay .qd-tail { fill:var(--menu-line); }
+#qiblaArOverlay .qd-kaaba-bg { fill:var(--menu-panel); stroke:var(--menu-gold); }
+#qiblaArOverlay .aligned .qd-head { fill:var(--menu-ok); }
+#qiblaArOverlay .aligned .qd-kaaba-bg { stroke:var(--menu-ok); }
+#qiblaArOverlay .qibla-dial-status { color:var(--menu-text); font-size:1rem; line-height:1.8; min-height:2em; }
+#qiblaArOverlay .aligned .qibla-dial-status { color:var(--menu-ok); }
+#qiblaArOverlay .qibla-dial-heading { color:var(--menu-muted); }
+#qiblaArOverlay .qibla-dial-dist { color:var(--menu-gold); margin:10px 0; }
+#qiblaArOverlay .qibla-ar-info, #qiblaArOverlay .qibla-ar-error { position:static; transform:none; max-width:calc(100% - 40px); width:420px; margin:8px auto; border-radius:16px; white-space:normal; background:var(--menu-panel); color:var(--menu-text); border:1px solid var(--menu-line); line-height:1.8; }
+#qiblaArOverlay .qibla-ar-aligned { display:none; }
+#islamicToolsOverlay .mushaf-content, #settingsOverlay .mushaf-content { width:100%; max-width:520px; margin:0 auto; padding:8px 20px 40px; }
+#islamicToolsOverlay .tools-intro { padding:20px 2px 26px; }
+#islamicToolsOverlay .settings-group, #settingsOverlay .settings-group { background:var(--menu-panel); border:1px solid var(--menu-line); border-radius:22px; padding:18px; margin-bottom:18px; box-shadow:none; }
+#islamicToolsOverlay .tools-directory { padding:0; border:none; background:none; }
+#islamicToolsOverlay .settings-group-title, #settingsOverlay .settings-group-title { color:var(--menu-gold); font-size:.8rem; margin-bottom:14px; }
+#islamicToolsOverlay .more-row, #settingsOverlay .more-row { background:var(--menu-panel); color:var(--menu-text); border:1px solid var(--menu-line); border-radius:17px; padding:15px; min-height:58px; gap:14px; text-align:start; }
+#islamicToolsOverlay .more-row:after { content:'‹'; margin-inline-start:auto; color:var(--menu-muted); font-size:1.4rem; }
+#islamicToolsOverlay .mr-icon, #settingsOverlay .mr-icon { display:grid; place-items:center; width:42px; height:42px; flex-shrink:0; background:var(--menu-bg); color:var(--menu-gold); border-radius:13px; }
+#islamicToolsOverlay .mr-label { min-width:0; font-size:.92rem; }
+#islamicToolsOverlay .mr-label small { display:block; color:var(--menu-muted); font-size:.74rem; font-weight:400; margin-top:5px; line-height:1.6; }
+#islamicToolsOverlay .settings-label, #settingsOverlay .settings-label { color:var(--menu-text); }
+#islamicToolsOverlay .settings-select, #settingsOverlay .settings-select { max-width:100%; background:var(--menu-bg); color:var(--menu-text); border-color:var(--menu-line); }
+@media(max-width:380px) { #islamicToolsOverlay .mushaf-content,#settingsOverlay .mushaf-content{padding-inline:12px;} .qibla-intro{padding-inline:20px;} #qiblaArOverlay .qibla-dial-wrap{padding-inline:20px;} }
+
 body {
   background:
     radial-gradient(900px 480px at 50% -120px, rgba(65, 138, 112, .35), transparent 65%),
@@ -201,3 +246,6 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+#qiblaArOverlay .qibla-dial { overflow:hidden; }
+
