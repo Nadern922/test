@@ -2811,6 +2811,7 @@
     </div>
     <div class="qibla-dial-status" id="qiblaDialStatus" role="status" aria-live="polite">🧭 اضغط لتفعيل البوصلة الحية</div>
     <div class="qibla-dial-heading" id="qiblaDialHeading"></div>
+    <button type="button" class="tool-btn" id="qiblaRetryBtn" style="margin:14px 0;max-width:300px;">تفعيل البوصلة / إعادة المحاولة</button>
     <div class="qibla-dial-dist" id="qiblaDialDist">بانتظار تحديد الموقع</div>
     <div class="qibla-dial-caption" style="margin-top:8px; margin-bottom:0;">لو كانت القراءة غير مستقرة حرّك جهازك على شكل ∞ لمعايرة البوصلة</div>
   </div>
@@ -5631,52 +5632,76 @@ function applyCompassRotation(){
   updateQiblaAlignment(rel);
 }
 
+let compassTimeout = null;
+let compassSession = 0;
+function stopCompass(){
+  compassSession++;
+  clearTimeout(compassTimeout);
+  window.removeEventListener('deviceorientationabsolute', handleOrientation, true);
+  window.removeEventListener('deviceorientation', handleOrientation, true);
+  compassActive = false;
+}
+function compassUnavailable(message){
+  qiblaArError.textContent = message;
+  qiblaArError.style.display = 'block';
+  if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = 'لا توجد قراءة مباشرة للبوصلة';
+}
 function handleOrientation(e){
   let heading;
-  if(typeof e.webkitCompassHeading === 'number'){
-    // iOS Safari: already true-north heading, no need to invert
+  if(Number.isFinite(e.webkitCompassHeading) && e.webkitCompassHeading >= 0){
     heading = e.webkitCompassHeading;
-  }else if(e.absolute && typeof e.alpha === 'number'){
+  }else if((e.absolute === true || e.type === 'deviceorientationabsolute') && Number.isFinite(e.alpha)){
     heading = 360 - e.alpha;
-  }else if(typeof e.alpha === 'number'){
-    // Relative orientation does not establish north; do not claim alignment.
-    if(!compassActive && qiblaDialStatusEl) qiblaDialStatusEl.textContent = "لا تتوفر قراءة للشمال؛ جرّب معايرة البوصلة";
-    return;
   }else{
     return;
   }
   if(!Number.isFinite(heading)) return;
   compassHeading = (heading + 360) % 360;
   compassActive = true;
+  clearTimeout(compassTimeout);
+  qiblaArError.style.display = 'none';
   applyCompassRotation();
   if(qiblaBearing !== null && !qiblaIsAligned){
-    qiblaInfoEls.forEach(el => el.textContent = `🧭 لُف حتى يشير السهم للأعلى`);
+    qiblaInfoEls.forEach(el => el.textContent = 'لفّ الهاتف حتى يشير السهم إلى الأعلى');
   }
-  if(qiblaDialHeadingEl) qiblaDialHeadingEl.textContent = `جهازك يتّجه ${Math.round(compassHeading)}°`;
+  if(qiblaDialHeadingEl) qiblaDialHeadingEl.textContent = `قراءة حية · اتجاه الهاتف ${Math.round(compassHeading)}°`;
 }
-
-function startCompass(){
-  if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
-    DeviceOrientationEvent.requestPermission().then(state => {
-      if(state === 'granted'){
-        window.addEventListener('deviceorientation', handleOrientation, true);
-      }else{
-        qiblaArError.textContent = 'تم رفض إذن البوصلة من إعدادات المتصفح. فعّله لمعرفة اتجاهك الحالي مباشرة.';
-        qiblaArError.style.display = 'block';
-        if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = '🔒 لم يتم السماح بالبوصلة';
+async function startCompass(){
+  stopCompass();
+  const session = compassSession;
+  qiblaArError.style.display = 'none';
+  qiblaIsAligned = false;
+  qiblaDialWrapEl?.classList.remove('aligned');
+  qiblaArAlignedEl?.classList.remove('show');
+  if(qiblaDialHeadingEl) qiblaDialHeadingEl.textContent = '';
+  if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = 'بانتظار قراءة حساس الاتجاه…';
+  if(!window.isSecureContext){
+    compassUnavailable('افتح التطبيق عبر رابط HTTPS لتفعيل حساس الاتجاه.');
+    return;
+  }
+  if(!('DeviceOrientationEvent' in window)){
+    compassUnavailable('المتصفح لا يتيح حساس الاتجاه. افتح الرابط في Chrome على هاتف يدعم البوصلة.');
+    return;
+  }
+  try{
+    if(typeof DeviceOrientationEvent.requestPermission === 'function'){
+      const permission = await DeviceOrientationEvent.requestPermission(true);
+      if(session !== compassSession) return;
+      if(permission !== 'granted'){
+        compassUnavailable('إذن الحركة والاتجاه مرفوض. اسمح به من إعدادات الموقع في المتصفح ثم أعد التفعيل.');
+        return;
       }
-    }).catch(() => {
-      qiblaArError.textContent = 'تعذّر تفعيل البوصلة على هذا الجهاز.';
-      qiblaArError.style.display = 'block';
-      if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = '⚠️ تعذّر تفعيل البوصلة';
-    });
-  }else if('DeviceOrientationEvent' in window){
+    }
     window.addEventListener('deviceorientationabsolute', handleOrientation, true);
     window.addEventListener('deviceorientation', handleOrientation, true);
-  }else{
-    qiblaArError.textContent = 'البوصلة الحية غير مدعومة على هذا الجهاز. جرّب هاتفًا يدعم حساس الاتجاه.';
-    qiblaArError.style.display = 'block';
-    if(qiblaDialStatusEl) qiblaDialStatusEl.textContent = 'البوصلة غير متاحة على هذا الجهاز';
+    compassTimeout = setTimeout(() => {
+      if(session === compassSession && !compassActive){
+        compassUnavailable('لم تصل قراءة للشمال. في Chrome افتح إعدادات الموقع وتحقق من السماح بحساسات الحركة. إذا استمرت المشكلة، قد لا يحتوي الهاتف حساس بوصلة أو لا يتيحه المتصفح.');
+        if(qiblaDialHeadingEl) qiblaDialHeadingEl.textContent = 'السهم ثابت: يعرض زاوية القبلة من الشمال، وليس اتجاه هاتفك.';
+      }
+    }, 5000);
+  }catch(error){
+    if(session === compassSession) compassUnavailable('تعذّر الوصول لحساس الاتجاه. تحقق من إذن الحركة ثم اضغط إعادة التفعيل.');
   }
 }
 
@@ -5697,12 +5722,14 @@ function openQiblaAR(){
 }
 
 function closeQiblaAR(){
+  stopCompass();
   qiblaArOverlay.classList.remove('open');
   document.body.style.overflow = '';
   setActiveNav(navHomeBtn);
 }
 
 qiblaArClose.addEventListener('click', closeQiblaAR);
+document.getElementById('qiblaRetryBtn').addEventListener('click', startCompass);
 
 if(heroQiblaMiniEl){
   heroQiblaMiniEl.addEventListener('click', (e) => {
